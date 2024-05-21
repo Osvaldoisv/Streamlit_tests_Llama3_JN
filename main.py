@@ -34,12 +34,12 @@ def converse(input: str) -> str:
     "Provide a natural language response using the user input."
     return model.invoke(input)
 
-@tool
-def correct(input: str) -> str:
-    "corrects spelling mistakes and returns the corrected sentence"
-    return model.invoke(input)
+# @tool
+# def correct(input: str) -> str:
+#     "corrects spelling mistakes and returns the corrected sentence"
+#     return model.invoke(input)
 
-tools = [add, multiply, converse, correct]
+tools = [add, multiply, converse]
 rendered_tools = render_text_description(tools)
 
 print("-"*50)
@@ -77,8 +77,8 @@ def tool_chain(model_output):
 
 chain = prompt | model | JsonOutputParser() | tool_chain
 
-print("-"*50)
-print(chain.invoke({'input': 'How arre you tooday?'}))
+# print("-"*50)
+# print(chain.invoke({'input': 'What is 3 times 23'}))
 # What is 3 times 23
 
 
@@ -86,3 +86,15 @@ print(chain.invoke({'input': 'How arre you tooday?'}))
 # msgs = StreamlitChatMessageHistory(key="langchain_messages")
 # if len(msgs.messages) == 0:
 #     msgs.add_ai_message("I can add, multiply, or just chat! How can I help you?")
+
+# # React to user input
+# if input := st.chat_input("What is up?"):
+# # Display user input and save to message history.
+#     st.chat_message("user").write(input)
+#     msgs.add_user_message(input) 
+#     # Invoke chain to get reponse.
+#     response = chain.invoke({'input': input})                 
+#     # Display AI assistant response and save to message history.
+#     st.chat_message("assistant").write(str(response))
+#     msgs.add_ai_message(response)
+
