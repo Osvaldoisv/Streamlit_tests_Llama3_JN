@@ -1,6 +1,6 @@
 # from langchain_community.chat_models import ChatOllama
 import streamlit as st # to render the user interface.
-from langchain_community.llms import Ollama # to use Ollama llms in langchain
+from langchain_community.llms.ollama import Ollama # to use Ollama llms in langchain
 from langchain_core.prompts import ChatPromptTemplate # crafts prompts for our llm
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory # stores message history
 from langchain_core.tools import tool # tools for our llm
@@ -22,7 +22,7 @@ print(add.description)
 print(add.args)
 
 print("-"*50)
-add.invoke({'first':3, 'second':6})
+print(add.invoke({'first':3, 'second':6}))
 
 @tool
 def multiply(first: int, second: int) -> int:
@@ -34,7 +34,12 @@ def converse(input: str) -> str:
     "Provide a natural language response using the user input."
     return model.invoke(input)
 
-tools = [add, multiply, converse]
+@tool
+def correct(input: str) -> str:
+    "corrects spelling mistakes and returns the corrected sentence"
+    return model.invoke(input)
+
+tools = [add, multiply, converse, correct]
 rendered_tools = render_text_description(tools)
 
 print("-"*50)
@@ -55,10 +60,13 @@ prompt = ChatPromptTemplate.from_messages(
 chain = prompt | model | JsonOutputParser()
 
 print("-"*50)
-chain.invoke({'input': 'What is 3 times 23'})
+print(chain.invoke({'input': 'What is 3 times 23'}))
+
+# print("-"*50)
+# print(chain.invoke({'input': 'How are you today?'}))
 
 print("-"*50)
-chain.invoke({'input': 'How are you today?'})
+print(chain.invoke({'input': 'How arre you tday?'}))
 
 # Define a function which returns the chosen tool
 # to be run as part of the chain.
@@ -70,9 +78,11 @@ def tool_chain(model_output):
 chain = prompt | model | JsonOutputParser() | tool_chain
 
 print("-"*50)
-chain.invoke({'input': 'What is 3 times 23'})
+print(chain.invoke({'input': 'How arre you tooday?'}))
+# What is 3 times 23
+
 
 # Set up message history.
-msgs = StreamlitChatMessageHistory(key="langchain_messages")
-if len(msgs.messages) == 0:
-    msgs.add_ai_message("I can add, multiply, or just chat! How can I help you?")
+# msgs = StreamlitChatMessageHistory(key="langchain_messages")
+# if len(msgs.messages) == 0:
+#     msgs.add_ai_message("I can add, multiply, or just chat! How can I help you?")
