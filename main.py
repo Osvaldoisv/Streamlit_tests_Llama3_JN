@@ -2,8 +2,7 @@
 import streamlit as st # to render the user interface.
 from langchain_community.llms import Ollama # to use Ollama llms in langchain
 from langchain_core.prompts import ChatPromptTemplate # crafts prompts for our llm
-from langchain_community.chat_message_histories import\
-StreamlitChatMessageHistory # stores message history
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory # stores message history
 from langchain_core.tools import tool # tools for our llm
 from langchain.tools.render import render_text_description # to describe tools as a string 
 from langchain_core.output_parsers import JsonOutputParser # ensure JSON input for tools
@@ -72,3 +71,8 @@ chain = prompt | model | JsonOutputParser() | tool_chain
 
 print("-"*50)
 chain.invoke({'input': 'What is 3 times 23'})
+
+# Set up message history.
+msgs = StreamlitChatMessageHistory(key="langchain_messages")
+if len(msgs.messages) == 0:
+    msgs.add_ai_message("I can add, multiply, or just chat! How can I help you?")
